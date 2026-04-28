@@ -1,3 +1,7 @@
-(function(){
-    return document.body.innerText;
-    })();
+(function() {
+  const content = document.body.innerText;
+  const cleaned = content
+    .replace(/\s+/g, ' ')
+    .trim();
+  return cleaned;
+})();
