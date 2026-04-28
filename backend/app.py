@@ -13,17 +13,31 @@ def ping():
     return jsonify ({"status" : "ok"})
 
 
-@app.route('/summarize', methods = ['POST'])
+@app.route('/summarize', methods=['POST'])
 def summarize_page():
     data = request.json
     url = data.get('url')
     title = data.get('title')
     content = data.get('content')
 
-    result = summarize(url, title, content )
-    save_summary(url, title, result, "", "")
+    result = summarize(url, title, content)
 
-    return jsonify({"summary": result})
+    # parse Gemini's response
+    summary = ""
+    keywords = ""
+    topic = ""
+
+    for line in result.split('\n'):
+        if line.startswith('SUMMARY:'):
+            summary = line.replace('SUMMARY:', '').strip()
+        elif line.startswith('KEYWORDS:'):
+            keywords = line.replace('KEYWORDS:', '').strip()
+        elif line.startswith('TOPIC:'):
+            topic = line.replace('TOPIC:', '').strip()
+
+    save_summary(url, title, summary, keywords, topic)
+
+    return jsonify({"summary": summary, "keywords": keywords, "topic": topic})
 
 @app.route('/summaries', methods=['GET'])
 def get_summaries():

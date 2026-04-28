@@ -8,7 +8,7 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 def summarize(url, title, content):
     prompt = f"""
-    You are a research assistant attempting to help a student organize the pages and website they visit (their research)
+    You are a research companion attempting to help a student organize the pages and website they visit (their research)
     
     Page title: {title}
     URL: {url}

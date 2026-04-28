@@ -20,5 +20,5 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
   });
 
   const data = await response.json();
-  status.textContent = '✅ Saved! Check your dashboard.';
+  status.textContent = 'Saved! Check your dashboard.';
 });
