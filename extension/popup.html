@@ -2,12 +2,55 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body { width: 300px; padding: 16px; font-family: sans-serif; }
-    button { width: 100%; padding: 10px; background: #4F8EF7;
-             color: white; border: none; border-radius: 6px;
-             cursor: pointer; font-size: 14px; }
-    #status { margin-top: 12px; font-size: 13px; color: #555; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 320px;
+      padding: 20px;
+      font-family: 'Segoe UI', lobster;
+      background-color: #0e1117;
+      color: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+      color: #ffffff;
+    }
+
+    button {
+  width: 100%;
+  padding: 10px;
+  background: #4F8EF7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+    }
+
+    button:hover {
+      background: #3a7de8;
+    }
+
+    #status {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #888;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
