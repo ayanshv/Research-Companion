@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from database import init_db, save_summary, get_all_summaries, get_summaries_by_topic, search_summaries
 from summarizer import summarize
+import sqlite3
 
 init_db()
 
@@ -54,6 +55,17 @@ def search():
     query = request.args.get('q')
     results = search_summaries(query)
     return jsonify({"results": results})
+
+@app.route('/summaries/<int:id>', methods=['DELETE'])
+def delete_summary(id):
+    conn = sqlite3.connect('research.db')
+    c = conn.cursor()
+    c.execute("DELETE FROM summaries WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+    return jsonify({"status" : "deleted"})
+
+
 
 if __name__ == "__main__":
     app.run(debug = True)

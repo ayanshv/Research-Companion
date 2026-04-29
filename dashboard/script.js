@@ -23,9 +23,10 @@ function displayCards(summaries) {
       <span class="topic-badge">${row[6] || 'General'}</span>
       <h2>${row[2]}</h2>
       <a href="${row[1]}" target="_blank">${row[1]}</a>
-       <p><strong>Summary:</strong> ${row[3]}</p>
+      <p><strong>Summary:</strong> ${row[3]}</p>
       <div class="keywords"><strong>Keywords:</strong> ${row[4] || 'No keywords'}</div>
-      <div class="date"> ${row[7]}</div>
+      <div class="date">${row[7]}</div>
+      <button class="delete-btn" onclick="deleteCard(${row[0]})">️ Delete</button>
     `;
     container.appendChild(card);
   });
@@ -33,6 +34,7 @@ function displayCards(summaries) {
 
 function populateTopicFilter(summaries) {
   const select = document.getElementById('topicFilter');
+  select.innerHTML = '<option value="">All Topics</option>';
   const topics = [...new Set(summaries.map(row => row[6]).filter(Boolean))];
   topics.forEach(topic => {
     const option = document.createElement('option');
@@ -40,6 +42,11 @@ function populateTopicFilter(summaries) {
     option.textContent = topic;
     select.appendChild(option);
   });
+}
+
+async function deleteCard(id) {
+  await fetch(`${API}/summaries/${id}`, { method: 'DELETE' });
+  loadSummaries();
 }
 
 document.getElementById('searchBar').addEventListener('input', async (e) => {
