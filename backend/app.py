@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from database import init_db, save_summary, get_all_summaries, get_summaries_by_topic, search_summaries
-from summarizer import summarize
+from summarizer import summarize, client
 import sqlite3
 
 init_db()
@@ -65,7 +65,26 @@ def delete_summary(id):
     conn.close()
     return jsonify({"status" : "deleted"})
 
-
+@app.route('/explain/<int:id>', methods=['GET'])
+def explain_further(id):
+    conn = sqlite3.connect('research.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM summaries WHERE id = ?", (id,))
+    explained = c.fetchone()
+    conn.close()
+    prompt = f"""
+    
+    INFORMATION: {explained[2]}, {explained[3]}, {explained[4]}
+    Read the text and visit the URL, then explain what the information is about with key details left out in the summary.
+    It should be very in depth, giving the user a true understanding of the information. Also act as if you are speaking directly to the user
+    
+    Length should be not too short nor too long, hitting the sweet spot which won't give too less info but also won't drive the user away.
+    """
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt
+    )
+    return jsonify({"explanation" : response.text})
 
 if __name__ == "__main__":
     app.run(debug = True)

@@ -26,7 +26,8 @@ function displayCards(summaries) {
       <p><strong>Summary:</strong> ${row[3]}</p>
       <div class="keywords"><strong>Keywords:</strong> ${row[4] || 'No keywords'}</div>
       <div class="date">${row[7]}</div>
-      <button class="delete-btn" onclick="deleteCard(${row[0]})">️ Delete</button>
+      <button class="explain-btn" onclick="explainFurther(${row[0]}, '${row[2]}')"> Explain</button>
+      <button class="delete-btn" onclick="deleteCard(${row[0]})"> Delete</button>
     `;
     container.appendChild(card);
   });
@@ -48,6 +49,41 @@ async function deleteCard(id) {
   await fetch(`${API}/summaries/${id}`, { method: 'DELETE' });
   loadSummaries();
 }
+
+async function explainFurther(id, title) {
+  const overlay = document.getElementById('modal-overlay');
+  const modalTitle = document.getElementById('modal-title');
+  const modalContent = document.getElementById('modal-content');
+
+  modalTitle.textContent = title;
+  modalContent.textContent = 'Loading explanation...';
+  overlay.style.display = 'flex';
+
+  try {
+    const response = await fetch(`${API}/explain/${id}`);
+    const data = await response.json();
+
+    const formatted = data.explanation
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\n\n/g, '<br><br>')
+      .replace(/\n/g, '<br>');
+
+    modalContent.innerHTML = formatted;
+  } catch (error) {
+    modalContent.textContent = 'Gemini is busy right now — please try again in a moment.';
+  }
+}
+
+document.getElementById('modal-close').addEventListener('click', () => {
+  document.getElementById('modal-overlay').style.display = 'none';
+});
+
+document.getElementById('modal-overlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').style.display = 'none';
+  }
+});
 
 document.getElementById('searchBar').addEventListener('input', async (e) => {
   const query = e.target.value;
