@@ -1,7 +1,7 @@
 let currentFolderId = null;
 let currentFolderName = null;
 
-const API = 'http://localhost:5000';
+const API = 'https://research-companion-production-ed0b.up.railway.app';
 
 async function loadFolderGrid() {
   const foldersRes = await fetch(`${API}/folders`);

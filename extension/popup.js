@@ -2,7 +2,7 @@ async function loadFolders() {
   const select = document.getElementById('folderSelect');
 
   try {
-    const response = await fetch('http://localhost:5000/folders');
+    const response = await fetch('https://research-companion-production-ed0b.up.railway.app');
     const data = await response.json();
 
     data.folders.forEach(folder => {
@@ -34,7 +34,7 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
     const content = results[0].result;
     status.textContent = 'Summarizing...';
 
-    const response = await fetch('http://localhost:5000/summarize', {
+    const response = await fetch('https://research-companion-production-ed0b.up.railway.app', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
