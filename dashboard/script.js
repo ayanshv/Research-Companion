@@ -26,8 +26,9 @@ function displayCards(summaries) {
       <p><strong>Summary:</strong> ${row[3]}</p>
       <div class="keywords"><strong>Keywords:</strong> ${row[4] || 'No keywords'}</div>
       <div class="date">${row[7]}</div>
-      <button class="explain-btn" onclick="explainFurther(${row[0]}, '${row[2]}')"> Explain</button>
-      <button class="delete-btn" onclick="deleteCard(${row[0]})"> Delete</button>
+      <button class="explain-btn" onclick="explainFurther(${row[0]}, '${row[2]}')">Explain</button>
+      <button class="folder-btn" onclick="openAssignFolder(${row[0]})">📁 Move to Folder</button>
+      <button class="delete-btn" onclick="deleteCard(${row[0]})">Delete</button>
     `;
     container.appendChild(card);
   });
@@ -71,8 +72,120 @@ async function explainFurther(id, title) {
 
     modalContent.innerHTML = formatted;
   } catch (error) {
-    modalContent.textContent = 'Gemini is busy right now — please try again in a moment.';
+    modalContent.textContent = 'Servers are busy right now, please try again in a moment.';
   }
+}
+
+async function loadFolders() {
+  const response = await fetch(`${API}/folders`);
+  const data = await response.json();
+  const container = document.getElementById('folders-container');
+  container.innerHTML = '';
+
+  data.folders.forEach(folder => {
+    const pill = document.createElement('div');
+    pill.className = 'folder-pill';
+    pill.textContent = folder[1];
+    pill.onclick = (e) => filterByFolder(folder[0], folder[1], e);
+    container.appendChild(pill);
+  });
+}
+
+async function createFolder() {
+  const input = document.getElementById('folder-name-input');
+  const name = input.value.trim();
+  if (!name) return;
+
+  await fetch(`${API}/folders`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ folder_name: name })
+  });
+
+  input.value = '';
+  document.getElementById('new-folder-modal').style.display = 'none';
+  loadFolders();
+}
+
+async function filterByFolder(folder_id, folder_name, e) {
+  const container = document.getElementById('cards-container');
+
+  container.innerHTML = `
+    <div class="folder-summary" id="folder-summary-box">
+      <p style="color:#888">Generating folder summary...</p>
+    </div>
+  `;
+
+  const response = await fetch(`${API}/summaries?folder_id=${folder_id}`);
+  const data = await response.json();
+
+  data.summaries.forEach(row => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <span class="topic-badge">${row[6] || 'General'}</span>
+      <h2>${row[2]}</h2>
+      <a href="${row[1]}" target="_blank">${row[1]}</a>
+      <p><strong>Summary:</strong> ${row[3]}</p>
+      <div class="keywords"><strong>Keywords:</strong> ${row[4] || 'No keywords'}</div>
+      <div class="date">${row[7]}</div>
+      <button class="explain-btn" onclick="explainFurther(${row[0]}, '${row[2]}')">Explain</button>
+      <button class="folder-btn" onclick="openAssignFolder(${row[0]})">📁 Move to Folder</button>
+      <button class="delete-btn" onclick="deleteCard(${row[0]})">Delete</button>
+    `;
+    container.appendChild(card);
+  });
+
+  document.querySelectorAll('.folder-pill').forEach(p => p.classList.remove('active'));
+  e.target.classList.add('active');
+
+  const summaryRes = await fetch(`${API}/folders/${folder_id}/summary`);
+  const summaryData = await summaryRes.json();
+
+  const formatted = summaryData.summary
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, '<br>');
+
+  document.getElementById('folder-summary-box').innerHTML = `
+    <h3>📁 ${folder_name} — AI Overview</h3>
+    <div>${formatted}</div>
+  `;
+}
+
+let currentAssignId = null;
+
+async function openAssignFolder(id) {
+  currentAssignId = id;
+
+  const response = await fetch(`${API}/folders`);
+  const data = await response.json();
+
+  const select = document.getElementById('assign-folder-select');
+  select.innerHTML = '';
+
+  data.folders.forEach(folder => {
+    const option = document.createElement('option');
+    option.value = folder[0];
+    option.textContent = folder[1];
+    select.appendChild(option);
+  });
+
+  document.getElementById('assign-folder-modal').style.display = 'flex';
+}
+
+async function assignToFolder() {
+  const folder_id = document.getElementById('assign-folder-select').value;
+
+  await fetch(`${API}/summaries/${currentAssignId}/folder`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ folder_id: folder_id })
+  });
+
+  document.getElementById('assign-folder-modal').style.display = 'none';
+  loadSummaries();
 }
 
 document.getElementById('modal-close').addEventListener('click', () => {
@@ -83,6 +196,22 @@ document.getElementById('modal-overlay').addEventListener('click', (e) => {
   if (e.target === document.getElementById('modal-overlay')) {
     document.getElementById('modal-overlay').style.display = 'none';
   }
+});
+
+document.getElementById('new-folder-btn').addEventListener('click', () => {
+  document.getElementById('new-folder-modal').style.display = 'flex';
+});
+
+document.getElementById('cancel-folder-btn').addEventListener('click', () => {
+  document.getElementById('new-folder-modal').style.display = 'none';
+});
+
+document.getElementById('create-folder-btn').addEventListener('click', createFolder);
+
+document.getElementById('confirm-assign-btn').addEventListener('click', assignToFolder);
+
+document.getElementById('cancel-assign-btn').addEventListener('click', () => {
+  document.getElementById('assign-folder-modal').style.display = 'none';
 });
 
 document.getElementById('searchBar').addEventListener('input', async (e) => {
@@ -102,3 +231,4 @@ document.getElementById('topicFilter').addEventListener('change', async (e) => {
 });
 
 loadSummaries();
+loadFolders();

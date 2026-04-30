@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from database import init_db, save_summary, get_all_summaries, get_summaries_by_topic, search_summaries
+from database import init_db, save_summary, get_all_summaries, get_summaries_by_topic, search_summaries, create_folder, get_all_folders, assign_folder
 from summarizer import summarize, client
 import sqlite3
 
@@ -40,10 +40,19 @@ def summarize_page():
 
     return jsonify({"summary": summary, "keywords": keywords, "topic": topic})
 
+
 @app.route('/summaries', methods=['GET'])
 def get_summaries():
-    summary = get_all_summaries()
-    return jsonify({"summaries": summary})
+    folder_id = request.args.get('folder_id')
+    if folder_id:
+        conn = sqlite3.connect('research.db')
+        c = conn.cursor()
+        c.execute("SELECT * FROM summaries WHERE folder_id = ? ORDER BY date_saved DESC", (folder_id,))
+        summaries = c.fetchall()
+        conn.close()
+    else:
+        summaries = get_all_summaries()
+    return jsonify({"summaries": summaries})
 
 @app.route('/summaries/topic/<topic>', methods=['GET'])
 def get_by_topic(topic):
@@ -85,6 +94,62 @@ def explain_further(id):
         contents=prompt
     )
     return jsonify({"explanation" : response.text})
+
+@app.route('/folders/<int:id>/summary', methods=['GET'])
+def folder_summary(id):
+    conn = sqlite3.connect('research.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM summaries WHERE folder_id = ?", (id,))
+    summaries = c.fetchall()
+    conn.close()
+
+    if not summaries:
+        return jsonify({"summary": "No summaries in this folder yet."})
+
+    combined = "\n\n".join([
+        f"Title: {row[2]}\nSummary: {row[3]}\nKeywords: {row[4]}"
+        for row in summaries
+    ])
+
+    prompt = f"""
+    You are a research assistant. A student has collected these research summaries in one folder:
+
+    {combined}
+
+    Please provide:
+    1. An overall summary of what this folder is about
+    2. The main themes and connections between the sources
+    3. Key takeaways the student should remember
+
+    Keep it concise and helpful.
+    """
+
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
+        return jsonify({"summary": response.text})
+    except Exception as e:
+        return jsonify({"summary": f"Could not generate summary: {str(e)}"})
+
+
+@app.route('/folders', methods = ['GET'])
+def get_folders():
+    folders = get_all_folders()
+    return jsonify({"folders": folders})
+
+@app.route('/folders', methods = ['POST'])
+def add_folder():
+    folder_name = request.json.get('folder_name')
+    create_folder(folder_name)
+    return jsonify({"status" : "created"})
+
+@app.route('/summaries/<int:id>/folder', methods=['POST'])
+def assign_to_folder(id):
+    folder_id = request.json.get('folder_id')
+    assign_folder(id, folder_id)
+    return jsonify({"status": "assigned"})
 
 if __name__ == "__main__":
     app.run(debug = True)

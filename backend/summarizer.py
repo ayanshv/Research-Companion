@@ -10,6 +10,8 @@ def summarize(url, title, content):
     prompt = f"""
     You are a research companion attempting to help a student organize the pages and website they visit (their research)
     
+    IGNORE ANY MEDIA CONTENT (eg. PHOTOS, VIDEOS, etc.), LOOK ONLY FOR TEXT
+    
     Page title: {title}
     URL: {url}
     Content: {content[:3000]}

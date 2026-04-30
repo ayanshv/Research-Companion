@@ -1,5 +1,6 @@
 import sqlite3
 
+
 def init_db():
     conn = sqlite3.connect('research.db')
     c = conn.cursor()
@@ -14,14 +15,52 @@ def init_db():
             date_saved TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS folders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE,
+            date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+
+    try:
+        c.execute("ALTER TABLE summaries ADD COLUMN folder_id INTEGER")
+    except:
+        pass
 
     conn.commit()
     conn.close()
 
+def create_folder(folder_name):
+    conn = sqlite3.connect('research.db')
+    c = conn.cursor()
+    c.execute(
+        "INSERT INTO folders (name) VALUES (?)",
+        (folder_name,))
 
-if __name__ == "__main__":
-    init_db()
-    print("Database created!")
+    conn.commit()
+    conn.close()
+
+def get_all_folders():
+    conn = sqlite3.connect('research.db')
+    c = conn.cursor()
+    c.execute(
+        "SELECT * FROM folders ORDER BY date_created DESC"
+    )
+    rows = c.fetchall()
+    conn.close()
+    return rows
+
+
+def assign_folder(summary_id, folder_id):
+    conn = sqlite3.connect('research.db')
+    c = conn.cursor()
+    c.execute(
+        "UPDATE summaries SET folder_id = ? WHERE id = ?",
+        (folder_id, summary_id))
+
+    conn.commit()
+    conn.close()
 
 def save_summary(url, title, summary, keywords, topic):
     conn = sqlite3.connect('research.db')
@@ -59,3 +98,9 @@ def search_summaries(query):
     rows = c.fetchall()
     conn.close()
     return rows
+
+
+
+if __name__ == "__main__":
+    init_db()
+    print("Database created!")
