@@ -133,6 +133,23 @@ input {
   background-color: #3a7de8;
 }
 
+.folder-btn {
+  margin-top: 8px;
+  margin-right: 8px;
+  padding: 6px 12px;
+  background-color: #FFBF00;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'Syne', sans-serif;
+}
+
+.folder-btn:hover {
+  background-color: #BA8E23;
+}
+
 #modal-overlay {
   position: fixed;
   top: 0; left: 0;
@@ -176,45 +193,6 @@ input {
   white-space: pre-wrap;
 }
 
-.folders-section {
-  margin-bottom: 32px;
-}
-
-.folders-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.folders-header h2 {
-  font-size: 1.2rem;
-}
-
-#new-folder-btn {
-  width: auto;
-  padding: 8px 16px;
-  font-size: 13px;
-}
-
-.folder-pill {
-  display: inline-block;
-  padding: 8px 16px;
-  background-color: #1a1d27;
-  border: 1px solid #2a2d3a;
-  border-radius: 20px;
-  margin-right: 8px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: all 0.2s;
-}
-
-.folder-pill:hover, .folder-pill.active {
-  background-color: #4F8EF7;
-  border-color: #4F8EF7;
-}
-
 #new-folder-modal {
   position: fixed;
   top: 0; left: 0;
@@ -245,12 +223,62 @@ input {
   width: 100%;
 }
 
+#new-folder-btn {
+  padding: 6px 12px;
+  margin-bottom: 12px;
+  margin-top: -7px;
+  background-color: #008000;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-family: 'Syne', sans-serif;
+}
+
+#new-folder-btn:hover {
+  background-color: #006600;
+}
+
 #create-folder-btn {
-  background-color: #4F8EF7;
+  padding: 10px 20px;
+  background-color: #008000;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-family: 'Syne', sans-serif;
+}
+
+#create-folder-btn:hover {
+  background-color: #006600;
 }
 
 #cancel-folder-btn {
-  background-color: #2a2d3a;
+  padding: 10px 20px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-family: 'Syne', sans-serif;
+}
+
+#cancel-folder-btn:hover {
+  background-color: #c0392b;
+}
+
+#assign-folder-modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
 #assign-folder-box {
@@ -264,32 +292,34 @@ input {
   gap: 12px;
 }
 
-.folder-btn {
-  margin-top: 8px;
-  margin-right: 8px;
-  padding: 6px 12px;
-  background-color: #2a2d3a;
+#confirm-assign-btn {
+  padding: 10px 20px;
+  background-color: #008000;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 15px;
   font-family: 'Syne', sans-serif;
 }
 
-.folder-btn:hover {
-  background-color: #3a3d4a;
+#confirm-assign-btn:hover {
+  background-color: #006600;
 }
 
-#assign-folder-modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.75);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+#cancel-assign-btn {
+  padding: 10px 20px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-family: 'Syne', sans-serif;
+}
+
+#cancel-assign-btn:hover {
+  background-color: #c0392b;
 }
 
 .folder-summary {
@@ -306,4 +336,59 @@ input {
 .folder-summary h3 {
   color: #4F8EF7;
   margin-bottom: 12px;
+}
+
+#folder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.folder-card {
+  background-color: #1a1d27;
+  border: 1px solid #2a2d3a;
+  border-radius: 12px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.folder-card:hover {
+  border-color: #4F8EF7;
+  transform: translateY(-2px);
+}
+
+.folder-card h3 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+.folder-card p {
+  font-size: 12px;
+  color: #888;
+}
+
+.folder-card-all {
+  border-color: #4F8EF7;
+}
+
+#back-btn {
+  margin-top: -30px;
+  margin-right: 8px;
+  padding: 10px 20px;
+  margin-bottom: 24px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-family: 'Syne', sans-serif;
+}
+
+#back-btn:hover {
+  background-color: #c0392b;
 }

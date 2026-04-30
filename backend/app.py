@@ -20,7 +20,7 @@ def summarize_page():
     url = data.get('url')
     title = data.get('title')
     content = data.get('content')
-
+    folder_id = data.get('folder_id') or None
     result = summarize(url, title, content)
 
     # parse Gemini's response
@@ -37,6 +37,13 @@ def summarize_page():
             topic = line.replace('TOPIC:', '').strip()
 
     save_summary(url, title, summary, keywords, topic)
+    if folder_id:
+        conn = sqlite3.connect('research.db')
+        c = conn.cursor()
+        c.execute("SELECT id FROM summaries ORDER BY id DESC LIMIT 1")
+        summary_id = c.fetchone()[0]
+        conn.close()
+        assign_folder(summary_id, folder_id)
 
     return jsonify({"summary": summary, "keywords": keywords, "topic": topic})
 
@@ -88,6 +95,8 @@ def explain_further(id):
     It should be very in depth, giving the user a true understanding of the information. Also act as if you are speaking directly to the user
     
     Length should be not too short nor too long, hitting the sweet spot which won't give too less info but also won't drive the user away.
+    
+    
     """
     response = client.models.generate_content(
         model="gemini-2.5-flash",
@@ -122,6 +131,8 @@ def folder_summary(id):
     3. Key takeaways the student should remember
 
     Keep it concise and helpful.
+    
+    DONT USE "###"
     """
 
     try:

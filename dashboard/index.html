@@ -8,57 +8,61 @@
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<div id="assign-folder-modal" style="display:none;">
-  <div id="assign-folder-box">
-    <h3>Move to Folder</h3>
-    <select id="assign-folder-select"></select>
-    <button id="confirm-assign-btn">Move</button>
-    <button id="cancel-assign-btn">Cancel</button>
-  </div>
-</div>
 <body>
 
-  <div class="header">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-    <img src="./favicon.png" alt="logo" style="width: 50px;">
-    <h1>Synapse - Research Companion</h1>
-    <p>All your saved research in one place</p>
+  <div id="home-view">
+    <div class="header">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+        <img src="./favicon.png" alt="logo" style="width: 40px;">
+        <h1>Research Companion</h1>
+      </div>
+      <p>All your saved research in one place</p>
+    </div>
+
+    <div class="controls">
+      <input type="text" id="searchBar" placeholder="Search your research...">
+      <select id="topicFilter">
+        <option value="">All Topics</option>
+      </select>
+      <button id="new-folder-btn">+ New Folder</button>
+    </div>
+
+    <div id="folder-grid"></div>
   </div>
 
-  <div class="controls">
-    <input type="text" id="searchBar" placeholder="Search your research...">
-    <select id="topicFilter">
-      <option value="">All Topics</option>
-    </select>
-  </div>
-<div class="folders-section">
-  <div class="folders-header">
-    <h2>📁 Folders</h2>
-    <button id="new-folder-btn">+ New Folder</button>
-  </div>
-  <div id="folders-container"></div>
-</div>
-
-<div id="new-folder-modal" style="display:none;">
-  <div id="new-folder-box">
-    <h3>Create New Folder</h3>
-    <input type="text" id="folder-name-input" placeholder="e.g. Biology Essay">
-    <button id="create-folder-btn">Create</button>
-    <button id="cancel-folder-btn">Cancel</button>
-  </div>
-</div>
-  <div id="cards-container">
-    <!-- cards will be injected here by script.js -->
+  <div id="folder-view" style="display:none;">
+    <button id="back-btn">Back</button>
+    <div id="folder-summary-box" class="folder-summary"></div>
+    <div id="cards-container"></div>
   </div>
 
   <div id="modal-overlay" style="display:none;">
     <div id="modal">
-      <button id="modal-close">✕</button>
+      <button id="modal-close">X</button>
       <h2 id="modal-title">Explanation</h2>
       <div id="modal-content"></div>
     </div>
   </div>
 
+  <div id="new-folder-modal" style="display:none;">
+    <div id="new-folder-box">
+      <h3>Create New Folder</h3>
+      <input type="text" id="folder-name-input" placeholder="e.g. Biology Essay">
+      <button id="create-folder-btn">Create</button>
+      <button id="cancel-folder-btn">Cancel</button>
+    </div>
+  </div>
+
+  <div id="assign-folder-modal" style="display:none;">
+    <div id="assign-folder-box">
+      <h3>Move to Folder</h3>
+      <select id="assign-folder-select"></select>
+      <button id="confirm-assign-btn">Move</button>
+      <button id="cancel-assign-btn">Cancel</button>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

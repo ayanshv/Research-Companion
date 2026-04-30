@@ -1,5 +1,26 @@
+async function loadFolders() {
+  const select = document.getElementById('folderSelect');
+
+  try {
+    const response = await fetch('http://localhost:5000/folders');
+    const data = await response.json();
+
+    data.folders.forEach(folder => {
+      const option = document.createElement('option');
+      option.value = folder[0];
+      option.textContent = folder[1];
+      select.appendChild(option);
+    });
+  } catch (error) {
+    console.log('Could not load folders:', error);
+  }
+}
+
+loadFolders();
+
 document.getElementById('saveBtn').addEventListener('click', async () => {
   const status = document.getElementById('status');
+  const folder_id = document.getElementById('folderSelect').value;
   status.textContent = 'Reading page...';
 
   try {
@@ -16,7 +37,12 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
     const response = await fetch('http://localhost:5000/summarize', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url: tab.url, title: tab.title, content: content })
+      body: JSON.stringify({
+        url: tab.url,
+        title: tab.title,
+        content: content,
+        folder_id: folder_id
+      })
     });
 
     const data = await response.json();
