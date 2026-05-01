@@ -162,6 +162,16 @@ def assign_to_folder(id):
     assign_folder(id, folder_id)
     return jsonify({"status": "assigned"})
 
+@app.route('/folders/<int:id>', methods=['DELETE'])
+def delete_folder(id):
+    conn = sqlite3.connect('research.db')
+    c = conn.cursor()
+    c.execute("UPDATE summaries SET folder_id = NULL WHERE folder_id = ?", (id,))
+    c.execute("DELETE FROM folders WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "deleted"})
+
 if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))

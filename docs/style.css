@@ -392,3 +392,19 @@ input {
 #back-btn:hover {
   background-color: #c0392b;
 }
+
+.delete-folder-btn {
+  margin-top: 12px;
+  padding: 4px 10px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-family: 'Syne', sans-serif;
+}
+
+.delete-folder-btn:hover {
+  background-color: #c0392b;
+}

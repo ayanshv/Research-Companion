@@ -29,10 +29,17 @@ async function loadFolderGrid() {
     card.innerHTML = `
       <h3>${folder[1]}</h3>
       <p>${count} cards</p>
+      <button class="delete-folder-btn" onclick="deleteFolder(event, ${folder[0]})">Delete</button>
     `;
     card.onclick = () => openFolderView(folder[0], folder[1]);
     grid.appendChild(card);
   });
+}
+
+async function deleteFolder(e, id) {
+  e.stopPropagation();
+  await fetch(`${API}/folders/${id}`, { method: 'DELETE' });
+  loadFolderGrid();
 }
 
 async function openFolderView(folder_id, folder_name) {
