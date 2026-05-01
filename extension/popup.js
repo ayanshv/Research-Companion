@@ -103,4 +103,8 @@ document.getElementById('get-key-btn').addEventListener('click', () => {
   chrome.tabs.create({ url: 'https://aistudio.google.com/apikey' });
 });
 
+document.getElementById('dashboard-btn').addEventListener('click', () => {
+  chrome.tabs.create({ url: 'https://ayanshv.github.io/Research-Companion/' });
+});
+
 init();

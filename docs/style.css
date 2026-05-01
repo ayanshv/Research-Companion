@@ -29,6 +29,7 @@ body {
   display: flex;
   gap: 16px;
   margin-bottom: 32px;
+  align-items: center;
 }
 
 input, select {
@@ -224,16 +225,15 @@ input {
 }
 
 #new-folder-btn {
-  padding: 6px 12px;
-  margin-bottom: 12px;
-  margin-top: -7px;
+  padding: 10px 16px;
   background-color: #008000;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 14px;
   font-family: 'Syne', sans-serif;
+  white-space: nowrap;
 }
 
 #new-folder-btn:hover {
@@ -407,4 +407,10 @@ input {
 
 .delete-folder-btn:hover {
   background-color: #c0392b;
+}
+
+#dashboard-btn {
+  background: #2a2d3a;
+  margin-top: 8px;
+  font-size: 13px;
 }
