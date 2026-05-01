@@ -21,9 +21,12 @@ def summarize_page():
     title = data.get('title')
     content = data.get('content')
     folder_id = data.get('folder_id') or None
-    result = summarize(url, title, content)
 
-    # parse Gemini's response
+    try:
+        result = summarize(url, title, content)
+    except Exception as e:
+        return jsonify({"error": "AI quota exceeded — please try again later."}), 429
+
     summary = ""
     keywords = ""
     topic = ""

@@ -46,7 +46,12 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
     });
 
     const data = await response.json();
-    status.textContent = 'Saved! Check your dashboard.';
+
+    if (data.error) {
+      status.textContent = data.error;
+    } else {
+      status.textContent = 'Saved! Check your dashboard.';
+    }
 
   } catch (error) {
     status.textContent = 'Error: ' + error.message;
