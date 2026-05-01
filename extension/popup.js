@@ -99,4 +99,8 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
   }
 });
 
+document.getElementById('get-key-btn').addEventListener('click', () => {
+  chrome.tabs.create({ url: 'https://aistudio.google.com/apikey' });
+});
+
 init();
