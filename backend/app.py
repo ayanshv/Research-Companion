@@ -21,9 +21,11 @@ def summarize_page():
     title = data.get('title')
     content = data.get('content')
     folder_id = data.get('folder_id') or None
+    api_key = request.headers.get('X-API-Key') or os.getenv('GEMINI_API_KEY')
 
     try:
-        result = summarize(url, title, content)
+        from summarizer import summarize_with_key
+        result = summarize_with_key(url, title, content, api_key)
     except Exception as e:
         return jsonify({"error": "AI quota exceeded — please try again later."}), 429
 
